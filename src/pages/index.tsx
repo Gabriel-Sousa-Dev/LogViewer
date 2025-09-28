@@ -50,9 +50,7 @@ export default function Home() {
                 return (
                     <Chip
                         className="capitalize"
-                        color={
-                            statusColorMap[log.level] as ChipProps["color"]
-                        }
+                        color={statusColorMap[log.level] as ChipProps["color"]}
                         size="sm"
                         variant="flat"
                     >

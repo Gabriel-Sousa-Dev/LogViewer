@@ -18,4 +18,16 @@ export const logs_mock: Log[] = [
         level: StatusLevel.LOW,
         key: 1,
     },
+    {
+        date: new Date("11-08-2006"),
+        content: "Hello world 2",
+        level: StatusLevel.MEDIUM,
+        key: 2,
+    },
+    {
+        date: new Date("12-08-2006"),
+        content: "Hello world 3",
+        level: StatusLevel.HIGH,
+        key: 3,
+    },
 ];
