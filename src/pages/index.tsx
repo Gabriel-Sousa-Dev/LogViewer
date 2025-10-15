@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { MoreHorizontal, PlusIcon } from "lucide-react";
 import { Button } from "@heroui/button";
 import {
@@ -15,8 +15,18 @@ import {
     TableRow,
     TableCell,
 } from "@heroui/table";
+import {
+    Modal,
+    ModalContent,
+    ModalHeader,
+    ModalBody,
+    ModalFooter,
+    useDisclosure
+} from "@heroui/modal"
 import { Chip, type ChipProps } from "@heroui/chip";
 import { Log, logs_mock, StatusLevel } from "@/mock/logs.mock.ts";
+import { Input } from "@heroui/input";
+import { useFiles } from "@/store/files";
 
 const columns = [
     {
@@ -39,6 +49,13 @@ const statusColorMap: Record<StatusLevel, ChipProps["color"]> = {
     high: "danger",
 };
 export default function Home() {
+    const { isOpen, onOpen, onOpenChange } = useDisclosure()
+    const files = useFiles(state => state.files)
+    const addNewFile = useFiles(state => state.addNewFile)
+    const removeFile = useFiles(state => state.removeFile)
+
+    const inputFileRef = useRef<HTMLInputElement>(null)
+
     const renderCell = React.useCallback((log: Log, columnKey: keyof Log) => {
         const cellValue = log[columnKey];
 
@@ -63,6 +80,18 @@ export default function Home() {
         }
     }, []);
 
+    function handleAddFile() {
+        console.log(inputFileRef.current?.files)
+        const newFile = inputFileRef.current?.files?.item(0)
+
+        if (!newFile) {
+            alert("Select a file in form")
+            return;
+        }
+
+        addNewFile(newFile!)
+    }
+
     return (
         <div className="container mx-auto p-6">
             <div className="min-h-screen flex gap-6 ">
@@ -72,6 +101,7 @@ export default function Home() {
                             <p className="font-bold text-lg">Files</p>
 
                             <Button
+                                onPress={onOpen}
                                 isIconOnly
                                 variant="solid"
                                 color="primary"
@@ -80,41 +110,53 @@ export default function Home() {
                                 <PlusIcon size={20} />
                             </Button>
                         </div>
-                        <div className="bg-content2 px-3 py-1.5 flex items-center gap-2 rounded-md hover:bg-primary-50 hover:border-primary-100 border-2 border-content4 transition-colors cursor-pointer">
-                            <p className="text-content2-foreground text-sm grow">
-                                logs.log
-                            </p>
 
-                            <p className="text-content2-foreground text-xs font-semibold">
-                                10.4 kb
-                            </p>
-                            <Dropdown>
-                                <DropdownTrigger>
-                                    <Button isIconOnly size="sm" variant="flat">
-                                        <MoreHorizontal size={15} />
-                                    </Button>
-                                </DropdownTrigger>
-                                <DropdownMenu aria-label="Static Actions">
-                                    <DropdownItem key="copy">
-                                        Copiar arquivo
-                                    </DropdownItem>
-                                    <DropdownItem key="edit">
-                                        Editar arquivo
-                                    </DropdownItem>
-                                    <DropdownItem
-                                        key="delete"
-                                        className="text-danger"
-                                        color="danger"
-                                    >
-                                        Deletar arquivo
-                                    </DropdownItem>
-                                </DropdownMenu>
-                            </Dropdown>
-                        </div>
+                        {
+                            Array.from(Object.entries(files)).length === 0 ? (
+                                <div className="bg-content2 px-3 py-1.5 flex items-center gap-2 rounded-md hover:bg-primary-50 hover:border-primary-100 border-2 border-content4 transition-colors cursor-pointer">
+                                    <p className="text-content2-foreground text-sm grow truncate">
+                                        Nenhum arquivo Selecionado
+                                    </p>
+                                </div>
+                            ) : Array.from(Object.entries(files)).map(([id, file]) => (
+                                <div key={id} data-file-id={id} className="bg-content2 px-3 py-1.5 flex items-center gap-2 rounded-md hover:bg-primary-50 hover:border-primary-100 border-2 border-content4 transition-colors cursor-pointer">
+                                    <p className="text-content2-foreground text-sm grow truncate">
+                                        {file.name}
+                                    </p>
+
+                                    <p className="text-content2-foreground text-xs font-semibold text-nowrap">
+                                        {file.size} kb
+                                    </p>
+                                    <Dropdown>
+                                        <DropdownTrigger>
+                                            <Button isIconOnly size="sm" variant="flat">
+                                                <MoreHorizontal size={15} />
+                                            </Button>
+                                        </DropdownTrigger>
+                                        <DropdownMenu aria-label="Static Actions">
+                                            <DropdownItem key="copy">
+                                                Copiar arquivo
+                                            </DropdownItem>
+                                            <DropdownItem key="edit">
+                                                Editar arquivo
+                                            </DropdownItem>
+                                            <DropdownItem
+                                                onClick={() => { removeFile(id) }}
+                                                key="delete"
+                                                className="text-danger"
+                                                color="danger"
+                                            >
+                                                Deletar arquivo
+                                            </DropdownItem>
+                                        </DropdownMenu>
+                                    </Dropdown>
+                                </div>
+                            ))
+                        }
                     </div>
                 </div>
 
-                <div className="flex-grow-10">
+                <div className="w-full shrink flex-grow-10">
                     <Table aria-label="Example static collection table">
                         <TableHeader columns={columns}>
                             {(column) => (
@@ -142,6 +184,29 @@ export default function Home() {
                         </TableBody>
                     </Table>
                 </div>
+
+                <Modal isOpen={isOpen} onOpenChange={onOpenChange} backdrop="opaque">
+                    <ModalContent>
+                        {
+                            (onClose) => (
+                                <>
+                                    <ModalHeader>
+                                        <h3>
+                                            New File
+                                        </h3>
+                                    </ModalHeader>
+                                    <ModalBody>
+                                        <Input ref={inputFileRef} type="file" placeholder="insira arquivos" multiple={false} />
+                                    </ModalBody>
+                                    <ModalFooter>
+                                        <Button onPress={onClose}>Fechar</Button>
+                                        <Button onPress={handleAddFile} variant="solid" color="primary">Adicionar arquivo</Button>
+                                    </ModalFooter>
+                                </>
+                            )
+                        }
+                    </ModalContent>
+                </Modal>
             </div>
         </div>
     );
