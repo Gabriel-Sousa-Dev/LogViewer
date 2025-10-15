@@ -116,7 +116,7 @@ export default function Home() {
                             Array.from(Object.entries(files)).length === 0 ? (
                                 <div className="bg-content2 px-3 py-2 flex items-center gap-2 rounded-md hover:bg-primary-50 hover:border-primary-100 border border-content4 shadow-small transition-colors cursor-pointer">
                                     <p className="text-content2-foreground text-sm grow truncate">
-                                        Nenhum arquivo Selecionado
+                                        No files selected
                                     </p>
                                 </div>
                             ) : Array.from(Object.entries(files)).map(([id, file]) => (
@@ -136,10 +136,10 @@ export default function Home() {
                                         </DropdownTrigger>
                                         <DropdownMenu aria-label="Static Actions">
                                             <DropdownItem key="copy">
-                                                Copiar arquivo
+                                                Copy file
                                             </DropdownItem>
                                             <DropdownItem key="edit">
-                                                Editar arquivo
+                                                Edit file
                                             </DropdownItem>
                                             <DropdownItem
                                                 onClick={() => { removeFile(id) }}
@@ -147,7 +147,7 @@ export default function Home() {
                                                 className="text-danger"
                                                 color="danger"
                                             >
-                                                Deletar arquivo
+                                                Delete file
                                             </DropdownItem>
                                         </DropdownMenu>
                                     </Dropdown>
@@ -200,8 +200,8 @@ export default function Home() {
                                         <Input ref={inputFileRef} type="file" placeholder="insira arquivos" multiple={false} />
                                     </ModalBody>
                                     <ModalFooter>
-                                        <Button onPress={onClose}>Fechar</Button>
-                                        <Button onPress={handleAddFile} variant="solid" color="primary">Adicionar arquivo</Button>
+                                        <Button onPress={onClose}>Close</Button>
+                                        <Button onPress={handleAddFile} variant="solid" color="primary">Add file</Button>
                                     </ModalFooter>
                                 </>
                             )
