@@ -1,4 +1,5 @@
 import React, { useRef } from "react";
+import prettyBytes from 'pretty-bytes'
 import { MoreHorizontal, PlusIcon } from "lucide-react";
 import { Button } from "@heroui/button";
 import {
@@ -95,7 +96,7 @@ export default function Home() {
     return (
         <div className="container mx-auto p-6">
             <div className="min-h-screen flex gap-6 ">
-                <div className="flex-grow-2">
+                <div className="flex-grow-1 shrink-0">
                     <div className="flex flex-col gap-1">
                         <div className="flex items-center justify-between pb-2 mb-2 border-b border-b-default">
                             <p className="font-bold text-lg">Files</p>
@@ -125,7 +126,7 @@ export default function Home() {
                                     </p>
 
                                     <p className="text-content2-foreground text-xs font-semibold text-nowrap">
-                                        {file.size} kb
+                                        {prettyBytes(file.size)}
                                     </p>
                                     <Dropdown>
                                         <DropdownTrigger>
@@ -156,7 +157,7 @@ export default function Home() {
                     </div>
                 </div>
 
-                <div className="w-full shrink flex-grow-10">
+                <div className="flex-grow-10">
                     <Table aria-label="Example static collection table">
                         <TableHeader columns={columns}>
                             {(column) => (
