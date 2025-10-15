@@ -113,13 +113,13 @@ export default function Home() {
 
                         {
                             Array.from(Object.entries(files)).length === 0 ? (
-                                <div className="bg-content2 px-3 py-1.5 flex items-center gap-2 rounded-md hover:bg-primary-50 hover:border-primary-100 border-2 border-content4 transition-colors cursor-pointer">
+                                <div className="bg-content2 px-3 py-2 flex items-center gap-2 rounded-md hover:bg-primary-50 hover:border-primary-100 border border-content4 shadow-small transition-colors cursor-pointer">
                                     <p className="text-content2-foreground text-sm grow truncate">
                                         Nenhum arquivo Selecionado
                                     </p>
                                 </div>
                             ) : Array.from(Object.entries(files)).map(([id, file]) => (
-                                <div key={id} data-file-id={id} className="bg-content2 px-3 py-1.5 flex items-center gap-2 rounded-md hover:bg-primary-50 hover:border-primary-100 border-2 border-content4 transition-colors cursor-pointer">
+                                <div key={id} data-file-id={id} className="bg-content2 px-3 py-2 flex items-center gap-2 rounded-md hover:bg-primary-50 hover:border-primary-100 border border-content4 transition-colors cursor-pointer">
                                     <p className="text-content2-foreground text-sm grow truncate">
                                         {file.name}
                                     </p>
